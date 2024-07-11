@@ -31,8 +31,8 @@ else:
 EXCLUDED_PATHS = ['/api/v1/auth_session/login/']
 
 
-@app.before_request
-def before_request():
+@app.before_request(401)
+def before_request(error) -> str:
     """
     Before request handler to authenticate and authorize requests.
     """

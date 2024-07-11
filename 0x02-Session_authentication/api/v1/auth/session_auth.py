@@ -6,7 +6,9 @@ This module defines the SessionAuth class for handling
 session-based authentication.
 """
 from api.v1.auth.auth import Auth
+import os
 import uuid
+from models.user import User
 
 
 class SessionAuth(Auth):
@@ -15,21 +17,11 @@ class SessionAuth(Auth):
     Currently empty, to be expanded for session
     authentication methods.
     """
-    user_id_by_session_id = {}
+    def __init__(self):
+        self.user_id_by_session_id = {}
 
     def create_session(self, user_id: str = None) -> str:
-        """
-        Creates a Session ID for a given user_id and
-        stores it in user_id_by_session_id.
-
-        Args:
-            user_id (str): The user ID for which to
-            create a session.
-
-        Returns:
-            str: The generated Session ID if successful,
-            None otherwise.
-        """
+        """ Create a session ID for a user """
         if user_id is None or not isinstance(user_id, str):
             return None
 
@@ -38,17 +30,46 @@ class SessionAuth(Auth):
         return session_id
 
     def user_id_for_session_id(self, session_id: str = None) -> str:
-        """
-        Retrieves the user ID associated with a given session ID.
-
-        Args:
-            session_id (str): The session ID to look up.
-
-        Returns:
-            str: The user ID associated with the session ID
-            if found, None otherwise.
-        """
+        """ Retrieve a user ID based on a session ID """
         if session_id is None or not isinstance(session_id, str):
             return None
 
         return self.user_id_by_session_id.get(session_id)
+
+    def session_cookie(self, request=None) -> str:
+        """ Retrieve the session ID from the request cookies """
+        if request is None:
+            return None
+
+        return request.cookies.get(os.getenv('SESSION_NAME'))
+
+    def current_user(self, request=None) -> User:
+        """ Retrieve the current authenticated user
+        based on session cookie """
+        session_id = self.session_cookie(request)
+        if session_id is None:
+            return None
+
+        user_id = self.user_id_for_session_id(session_id)
+        if user_id is None:
+            return None
+
+        return User.get(user_id)
+
+    def destroy_session(self, request=None):
+        """ Destroy user session / logout """
+        if request is None:
+            return False
+
+        session_id = self.session_cookie(request)
+        if not session_id:
+            return False
+
+        user_id = self.user_id_for_session_id(session_id)
+        if not user_id:
+            return False
+
+        if session_id in self.user_id_by_session_id:
+            del self.user_id_by_session_id[session_id]
+            return True
+        return False

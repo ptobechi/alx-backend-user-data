@@ -41,7 +41,9 @@ def before_request():
         request) is None and auth.session_cookie(request) is None:
         abort(401)
 
-    if path not in EXCLUDED_PATHS and auth.require_auth(path, EXCLUDED_PATHS):
+    if path not in EXCLUDED_PATHS and auth.require_auth(path,
+                                                        EXCLUDED_PATHS
+                                                        ):
         if auth.authorization_header(
             request) is None and auth.session_cookie(request) is None:
             abort(401)

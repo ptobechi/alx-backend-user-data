@@ -11,6 +11,7 @@ class Auth:
     Auth class to manage the API authentication
     """
     
+    
     def require_auth(self, path: str,
                      excluded_paths: List[str]) -> bool:
         """
@@ -18,11 +19,13 @@ class Auth:
         """
         return False
 
+
     def authorization_header(self, request=None) -> str:
         """
         Method to get the authorization header from a request
         """
         return None
+
 
     def current_user(self, request=None) -> TypeVar('User'):
         """

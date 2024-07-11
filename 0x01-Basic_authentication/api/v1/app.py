@@ -23,6 +23,8 @@ if AUTH_TYPE == "auth":
 
 @app.before_request
 def before_request():
+    """Before request header
+    """
     if auth is None:
         return
 

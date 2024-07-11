@@ -22,8 +22,15 @@ class Auth:
         if not path.endswith('/'):
             path += '/'
 
-        # Check if the normalized path is in excluded_paths
-        return path not in excluded_paths
+        # Check for wildcard matches at the end of excluded_paths
+        for excluded_path in excluded_paths:
+            if excluded_path.endswith('*'):
+                if path.startswith(excluded_path[:-1]):
+                    return False
+            elif path == excluded_path:
+                return False
+
+        return True
 
     def authorization_header(self, request=None) -> str:
         """

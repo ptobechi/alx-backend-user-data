@@ -37,9 +37,7 @@ class BasicAuth(Auth):
 
         return base64_part
 
-
-    def decode_base64_authorization_header(
-            self, base64_authorization_header: str) -> str:
+    def decode_base64_authorization_header(self, base64_authorization_header: str) -> str:
         """Decodes a Base64 encoded string and returns
         it as a UTF-8 string.
 

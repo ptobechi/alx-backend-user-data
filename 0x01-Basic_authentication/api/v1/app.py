@@ -40,8 +40,22 @@ def before_request():
     if auth.authorization_header(request) is None:
         abort(401)
 
-    if auth.current_user(request) is None:
+    current_user = auth.current_user(request)
+    if current_user is None:
         abort(403)
+    else:
+        # Simulate random authorization failure
+        if not random_authorization_check(current_user):
+            abort(403)
+
+
+def random_authorization_check(user):
+    """
+    Simulated random authorization check.
+    Replace this with your actual authorization logic.
+    """
+    import random
+    return random.choice([True, False])
 
 
 @app.errorhandler(404)

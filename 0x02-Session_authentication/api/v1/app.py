@@ -27,13 +27,24 @@ elif AUTH_TYPE == "session_auth":
 else:
     auth = None
 
+# Environment variables
+EXCLUDED_PATHS = ['/api/v1/auth_session/login/']
 
 @app.before_request
 def before_request():
     """
     Before request handler to authenticate and authorize requests.
     """
-    request.current_user = auth.current_user(request)
+    path = request.path
+
+    if auth.authorization_header(
+        request) is None and auth.session_cookie(request) is None:
+        abort(401)
+
+    if path not in EXCLUDED_PATHS and auth.require_auth(path, EXCLUDED_PATHS):
+        if auth.authorization_header(
+            request) is None and auth.session_cookie(request) is None:
+            abort(401)
 
 
 def random_authorization_check(user):

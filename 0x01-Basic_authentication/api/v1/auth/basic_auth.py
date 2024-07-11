@@ -3,6 +3,7 @@
 Basic Authentication module for the API
 """
 from api.v1.auth.auth import Auth
+import base64
 
 
 class BasicAuth(Auth):
@@ -37,26 +38,26 @@ class BasicAuth(Auth):
         return base64_part
 
 
-def decode_base64_authorization_header(
-        self, base64_authorization_header: str) -> str:
-    """Decodes a Base64 encoded string and returns
-    it as a UTF-8 string.
+    def decode_base64_authorization_header(
+            self, base64_authorization_header: str) -> str:
+        """Decodes a Base64 encoded string and returns
+        it as a UTF-8 string.
 
-    Args:
-        base64_authorization_header (str):
-        The Base64 encoded string.
+        Args:
+            base64_authorization_header (str):
+            The Base64 encoded string.
 
-    Returns:
-        str: The decoded UTF-8 string, or
-        None if invalid Base64.
-    """
-    if base64_authorization_header is None or not isinstance(
-            base64_authorization_header, str):
-        return None
+        Returns:
+            str: The decoded UTF-8 string, or
+            None if invalid Base64.
+        """
+        if base64_authorization_header is None or not isinstance(
+                base64_authorization_header, str):
+            return None
 
-    try:
-        decoded_bytes = base64.b64decode(base64_authorization_header)
-        decoded_string = decoded_bytes.decode('utf-8')
-        return decoded_string
-    except (base64.binascii.Error, UnicodeDecodeError):
-        return None
+        try:
+            decoded_bytes = base64.b64decode(base64_authorization_header)
+            decoded_string = decoded_bytes.decode('utf-8')
+            return decoded_string
+        except (base64.binascii.Error, UnicodeDecodeError):
+            return None

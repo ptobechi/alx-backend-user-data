@@ -4,6 +4,7 @@ Basic Authentication module for the API
 """
 from api.v1.auth.auth import Auth
 import base64
+from models.user import User
 
 
 class BasicAuth(Auth):
@@ -112,4 +113,44 @@ class BasicAuth(Auth):
         if not user.is_valid_password(user_pwd):
             return None
 
+        return user
+
+    def current_user(self, request=None) -> User:
+        """
+        Retrieves the User instance based on Basic Authentication
+        credentials in the request.
+
+        Args:
+            request (Request): The Flask request object
+            containing Authorization header.
+
+        Returns:
+            User: The User instance if authentication is successful,
+            None otherwise.
+        """
+        if request is None:
+            return None
+
+        # Extract Authorization header
+        auth_header = self.authorization_header(request)
+        if auth_header is None:
+            return None
+
+        # Extract Base64 part of Authorization header
+        base64_header = self.extract_base64_authorization_header(auth_header)
+        if base64_header is None:
+            return None
+
+        # Decode Base64 Authorization header
+        decoded_header = self.decode_base64_authorization_header(base64_header)
+        if decoded_header is None:
+            return None
+
+        # Extract user credentials (email and password)
+        user_email, user_pwd = self.extract_user_credentials(decoded_header)
+        if user_email is None or user_pwd is None:
+            return None
+
+        # Retrieve User object based on credentials
+        user = self.user_object_from_credentials(user_email, user_pwd)
         return user

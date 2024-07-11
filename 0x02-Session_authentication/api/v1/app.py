@@ -30,6 +30,7 @@ else:
 # Environment variables
 EXCLUDED_PATHS = ['/api/v1/auth_session/login/']
 
+
 @app.before_request
 def before_request():
     """

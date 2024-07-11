@@ -9,6 +9,7 @@ from flask_cors import (CORS, cross_origin)
 from api.v1.auth.basic_auth import BasicAuth
 from api.v1.auth.session_auth import SessionAuth
 import os
+from api.v1.auth.session_exp_auth import SessionExpAuth
 
 
 app = Flask(__name__)
@@ -17,17 +18,20 @@ CORS(app, resources={r"/api/v1/*": {"origins": "*"}})
 
 auth = None
 
-AUTH_TYPE = getenv("AUTH_TYPE")
+AUTH_TYPE = os.getenv("AUTH_TYPE", "session_auth")
+
 if AUTH_TYPE == "basic_auth":
-    from api.v1.auth.basic_auth import BasicAuth
     auth = BasicAuth()
+
 elif AUTH_TYPE == "session_auth":
-    from api.v1.auth.session_auth import SessionAuth
     auth = SessionAuth()
+
+elif AUTH_TYPE == "session_exp_auth":
+    auth = SessionExpAuth()
+    
 else:
     auth = None
 
-# Environment variables
 EXCLUDED_PATHS = ['/api/v1/auth_session/login/']
 
 

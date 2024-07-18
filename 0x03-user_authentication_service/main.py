@@ -1,11 +1,13 @@
 #!/usr/bin/env python3
 """Main application"""
+
 import requests
 
 
 BASE_URL = 'http://localhost:5000'  # Replace with your actual server URL
 
 def register_user(email: str, password: str) -> None:
+    """Register user endpoint test"""
     url = f"{BASE_URL}/users"
     data = {
         'email': email,
@@ -16,6 +18,8 @@ def register_user(email: str, password: str) -> None:
     print(f"User {email} registered successfully.")
 
 def log_in_wrong_password(email: str, password: str) -> None:
+    """Password check user endpoint test"""
+
     url = f"{BASE_URL}/sessions"
     data = {
         'email': email,
@@ -26,6 +30,8 @@ def log_in_wrong_password(email: str, password: str) -> None:
     print(f"Attempted login with wrong password for {email} returned 401 as expected.")
 
 def log_in(email: str, password: str) -> str:
+    """Login user endpoint test"""
+
     url = f"{BASE_URL}/sessions"
     data = {
         'email': email,
@@ -37,12 +43,14 @@ def log_in(email: str, password: str) -> str:
     return response.cookies.get('session_id')
 
 def profile_unlogged() -> None:
+    """logout user endpoint test"""
     url = f"{BASE_URL}/profile"
     response = requests.get(url)
     assert response.status_code == 403
     print("Attempted to access profile unlogged, returned 403 as expected.")
 
 def profile_logged(session_id: str) -> None:
+    """logged in user profile endpoint test"""
     url = f"{BASE_URL}/profile"
     cookies = {'session_id': session_id}
     response = requests.get(url, cookies=cookies)
@@ -50,6 +58,7 @@ def profile_logged(session_id: str) -> None:
     print(f"Accessed profile successfully with session_id {session_id}.")
 
 def log_out(session_id: str) -> None:
+    """logout user endpoint test"""
     url = f"{BASE_URL}/sessions"
     cookies = {'session_id': session_id}
     response = requests.delete(url, cookies=cookies)
@@ -57,6 +66,7 @@ def log_out(session_id: str) -> None:
     print(f"Logged out successfully with session_id {session_id}.")
 
 def reset_password_token(email: str) -> str:
+    """generate reset password token endpoint test"""
     url = f"{BASE_URL}/reset_password"
     data = {'email': email}
     response = requests.post(url, data=data)
@@ -66,6 +76,7 @@ def reset_password_token(email: str) -> str:
     return reset_token
 
 def update_password(email: str, reset_token: str, new_password: str) -> None:
+    """update user password endpoint test"""
     url = f"{BASE_URL}/reset_password"
     data = {
         'email': email,

@@ -7,6 +7,7 @@ from sqlalchemy.orm import sessionmaker
 
 Base = declarative_base()
 
+
 class User(Base):
     """User model for storing user data."""
     

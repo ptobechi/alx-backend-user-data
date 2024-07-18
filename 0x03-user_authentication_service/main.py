@@ -4,7 +4,8 @@
 import requests
 
 
-BASE_URL = 'http://localhost:5000'  # Replace with your actual server URL
+BASE_URL = 'http://localhost:5000'
+
 
 def register_user(email: str, password: str) -> None:
     """Register user endpoint test"""
@@ -17,7 +18,8 @@ def register_user(email: str, password: str) -> None:
     assert response.status_code == 200
     print(f"User {email} registered successfully.")
 
-def log_in_wrong_password(email: str, password: str) -> None:
+def log_in_wrong_password(email: str,
+                          password: str) -> None:
     """Password check user endpoint test"""
 
     url = f"{BASE_URL}/sessions"
@@ -27,7 +29,8 @@ def log_in_wrong_password(email: str, password: str) -> None:
     }
     response = requests.post(url, data=data)
     assert response.status_code == 401
-    print(f"Attempted login with wrong password for {email} returned 401 as expected.")
+    print(f"Attempted login with wrong password for 
+          {email} returned 401 as expected.")
 
 def log_in(email: str, password: str) -> str:
     """Login user endpoint test"""
@@ -47,7 +50,8 @@ def profile_unlogged() -> None:
     url = f"{BASE_URL}/profile"
     response = requests.get(url)
     assert response.status_code == 403
-    print("Attempted to access profile unlogged, returned 403 as expected.")
+    print(f"Attempted to access profile unlogged,
+          returned 403 as expected.")
 
 def profile_logged(session_id: str) -> None:
     """logged in user profile endpoint test"""
@@ -55,7 +59,8 @@ def profile_logged(session_id: str) -> None:
     cookies = {'session_id': session_id}
     response = requests.get(url, cookies=cookies)
     assert response.status_code == 200
-    print(f"Accessed profile successfully with session_id {session_id}.")
+    print(f"Accessed profile successfully
+          with session_id {session_id}.")
 
 def log_out(session_id: str) -> None:
     """logout user endpoint test"""
@@ -63,7 +68,8 @@ def log_out(session_id: str) -> None:
     cookies = {'session_id': session_id}
     response = requests.delete(url, cookies=cookies)
     assert response.status_code == 200
-    print(f"Logged out successfully with session_id {session_id}.")
+    print(f"Logged out successfully with
+          session_id {session_id}.")
 
 def reset_password_token(email: str) -> str:
     """generate reset password token endpoint test"""
@@ -72,10 +78,12 @@ def reset_password_token(email: str) -> str:
     response = requests.post(url, data=data)
     assert response.status_code == 200
     reset_token = response.json()['reset_token']
-    print(f"Reset password token generated successfully for {email}: {reset_token}.")
+    print(f"Reset password token generated
+          successfully for {email}: {reset_token}.")
     return reset_token
 
-def update_password(email: str, reset_token: str, new_password: str) -> None:
+def update_password(email: str, reset_token: str,
+                    new_password: str) -> None:
     """update user password endpoint test"""
     url = f"{BASE_URL}/reset_password"
     data = {

@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+"""Application routing module"""
 from flask import Flask, request, jsonify, abort
 from auth import Auth
 

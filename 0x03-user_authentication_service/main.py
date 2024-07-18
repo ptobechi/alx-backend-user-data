@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+"""Main application"""
 import requests
 
 BASE_URL = 'http://localhost:5000'  # Replace with your actual server URL

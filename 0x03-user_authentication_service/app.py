@@ -68,5 +68,71 @@ def logout_user():
     abort(403, description="Forbidden")
 
 
+@app.route("/profile", methods=["GET"])
+def profile():
+    """Return the user's email if logged in,
+    otherwise respond with a 403 error."""
+    session_id = request.cookies.get("session_id")
+    if not session_id:
+        abort(403, description="Forbidden")
+
+    user = AUTH.get_user_from_session_id(session_id)
+    if user:
+        return jsonify({"email": user.email})
+
+    abort(403, description="Forbidden")
+
+
+@app.route('/reset_password', methods=['POST'])
+def get_reset_password_token():
+    """
+    Handle POST request to generate a reset password token.
+    """
+    email = request.form.get('email')
+
+    if not email:
+        abort(400, description="Missing email")
+
+    try:
+        # Generate the reset token
+        reset_token = AUTH.get_reset_password_token(email)
+    except ValueError:
+        # Email not found
+        abort(403, description="Email not registered")
+
+    # Return JSON response with email and reset token
+    return jsonify({
+        'email': email,
+        'reset_token': reset_token
+    }), 200
+
+
+@app.route('/reset_password', methods=['PUT'])
+def update_password():
+    """
+    Handle PUT request to update password using a reset token.
+    """
+    email = request.form.get('email')
+    reset_token = request.form.get('reset_token')
+    new_password = request.form.get('new_password')
+
+    if not email or not reset_token or not new_password:
+        abort(400,
+              description="Missing email, reset token, or new password")
+
+    try:
+        # Update the password
+        Auth.update_password(email, reset_token, new_password)
+    except ValueError:
+        # Invalid reset token
+        abort(403, description="Invalid reset token")
+
+    # Return JSON response indicating success
+    return jsonify({
+        'email': email,
+        'message': 'Password updated'
+    }), 200
+
+
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=5000)

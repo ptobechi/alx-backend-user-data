@@ -7,7 +7,7 @@ from db import DB
 import bcrypt
 import uuid
 from user import User
-
+from typing import Type
 
 class Auth:
     """Auth class to interact with the authentication database.
@@ -42,11 +42,6 @@ class Auth:
             return bcrypt.checkpw(password.encode(), user.hashed_password)
         except Exception:
             return False
-
-    def _generate_uuid(self) -> str:
-        """Generate a new UUID and return it as a string.
-        """
-        return str(uuid.uuid4())
 
     def create_session(self, email: str) -> str:
         """Create a new session for the user with the
@@ -84,3 +79,34 @@ class Auth:
             self._db.update_user(user_id=user_id, session_id=None)
         except Exception:
             pass
+
+    def _generate_uuid(self) -> str:
+        """Generate a new UUID and return it as a string."""
+        return str(uuid.uuid4())
+
+    def get_reset_password_token(self, email: str) -> str:
+        """
+        Generate a reset password token for the user with the given email.
+        
+        Args:
+            email (str): The email of the user.
+        
+        Returns:
+            str: The generated reset token.
+        
+        Raises:
+            ValueError: If no user with the given email is found.
+        """
+        # Locate the user by email
+        user = self._db.find_user_by_email(email)
+        if not user:
+            raise ValueError("User not found")
+
+        # Generate a new UUID token
+        token = self._generate_uuid()
+
+        # Update the user's reset_token field
+        user.reset_token = token
+        self._db.update_user(user)
+
+        return token

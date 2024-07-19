@@ -7,7 +7,6 @@ from sqlalchemy.exc import InvalidRequestError
 from sqlalchemy.orm.exc import NoResultFound
 from bcrypt import hashpw, gensalt
 
-
 class Auth:
     """Auth class to interact with the authentication database."""
 

@@ -4,7 +4,7 @@ Flask application setup
 """
 
 from flask import Flask, jsonify, request, abort, make_response
-
+from flask import redirect
 from auth import Auth
 
 app = Flask(__name__)
@@ -19,7 +19,8 @@ def home():
 
 @app.route("/users", methods=["POST"])
 def register_user():
-    """Registers a new user or returns an error if the user already exists."""
+    """Registers a new user or returns an error
+    if the user already exists."""
     email = request.form.get("email")
     password = request.form.get("password")
 
@@ -48,6 +49,23 @@ def login_user():
     response = make_response(jsonify({"email": email, "message": "logged in"}))
     response.set_cookie("session_id", session_id)
     return response
+
+
+@app.route("/sessions", methods=["DELETE"])
+def logout_user():
+    """Log out a user by destroying their session."""
+    session_id = request.cookies.get("session_id")
+    if not session_id:
+        abort(403, description="Forbidden")
+
+    user = AUTH.get_user_from_session_id(session_id)
+    if user:
+        AUTH.destroy_session(user.id)
+        response = redirect("/")
+        response.set_cookie("session_id", "", expires=0)
+        return response
+
+    abort(403, description="Forbidden")
 
 
 if __name__ == "__main__":

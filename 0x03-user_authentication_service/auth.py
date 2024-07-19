@@ -7,6 +7,7 @@ from sqlalchemy.exc import InvalidRequestError
 from sqlalchemy.orm.exc import NoResultFound
 from bcrypt import hashpw, gensalt
 
+
 class Auth:
     """Auth class to interact with the authentication database."""
 
@@ -47,4 +48,4 @@ class Auth:
             # User does not exist, proceed to create
             hashed_password = self._hash_password(password)
             user_id = self._db.add_user(email, hashed_password)
-            return User(user_id, email, hashed_password, None, None)
+            return User(user_id, email, hashed_password)

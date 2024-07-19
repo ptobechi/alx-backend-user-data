@@ -63,6 +63,8 @@ class DB:
             raise NoResultFound("No user found with the given criteria.")
         except InvalidRequestError:
             raise InvalidRequestError("Invalid query arguments.")
+        except Exception as e:
+            raise InvalidRequestError(f"Unexpected error: {e}")
 
     def update_user(self, user_id: int, **kwargs) -> None:
         """Update a user's attributes

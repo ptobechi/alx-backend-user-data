@@ -46,10 +46,12 @@ class DB:
         """Find a user by arbitrary keyword arguments
 
         Args:
-            **kwargs: Arbitrary keyword arguments to filter the users table.
+            **kwargs:
+                Arbitrary keyword arguments to filter the users table.
 
         Returns:
-            User: The first User object that matches the filters.
+            User:
+                The first User object that matches the filters.
 
         Raises:
             NoResultFound: If no user is found.
@@ -66,14 +68,17 @@ class DB:
         """Update a user's attributes
 
         Args:
-            user_id (int): The ID of the user to update.
-            **kwargs: Arbitrary keyword arguments to update the user's attributes.
+            user_id (int): 
+            The ID of the user to update.
+            **kwargs:
+            Arbitrary keyword arguments to update the user's attributes.
 
         Returns:
             None
 
         Raises:
-            ValueError: If an argument does not correspond to a user attribute.
+            ValueError:
+                If an argument does not correspond to a user attribute.
         """
         user = self.find_user_by(id=user_id)
         for key, value in kwargs.items():

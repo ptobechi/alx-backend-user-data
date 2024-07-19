@@ -6,6 +6,9 @@ Module to obfuscate specific fields in a log message.
 import re
 import logging
 from typing import List, Tuple
+import os
+import mysql.connector
+from mysql.connector import connection
 
 PII_FIELDS: Tuple[str, ...] = (
     "name", "email", "phone", "ssn", "password"
@@ -35,6 +38,26 @@ def filter_datum(fields: List[str],
     pattern = '|'.join(f'{field}=[^{separator}]*' for field in fields)
     return re.sub(pattern, lambda m: f"{m.group().split('=')[0]}={redaction}",
                   message)
+
+def get_db() -> connection.MySQLConnection:
+    """
+    Connect to the database using credentials from environment variables.
+
+    Returns:
+        mysql.connector.connection.MySQLConnection:
+            Database connection object.
+    """
+    username = os.getenv('PERSONAL_DATA_DB_USERNAME', 'root')
+    password = os.getenv('PERSONAL_DATA_DB_PASSWORD', '')
+    host = os.getenv('PERSONAL_DATA_DB_HOST', 'localhost')
+    db_name = os.getenv('PERSONAL_DATA_DB_NAME')
+
+    return mysql.connector.connect(
+        user=username,
+        password=password,
+        host=host,
+        database=db_name
+    )
 
 
 class RedactingFormatter(logging.Formatter):

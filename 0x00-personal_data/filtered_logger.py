@@ -3,9 +3,9 @@
 Module to obfuscate specific fields in a log message.
 """
 
-
 import re
 from typing import List
+
 
 def filter_datum(fields: List[str],
                  redaction: str,

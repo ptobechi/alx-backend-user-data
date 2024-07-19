@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """
-Module to obfuscate specific fields in a log message.
+Module to obfuscate specific fields in a log
+message and configure logger.
 """
 
 import re
@@ -10,6 +11,7 @@ import os
 import mysql.connector
 from mysql.connector import connection
 
+# Define PII fields
 PII_FIELDS: Tuple[str, ...] = (
     "name", "email", "phone", "ssn", "password"
 )
@@ -38,26 +40,6 @@ def filter_datum(fields: List[str],
     pattern = '|'.join(f'{field}=[^{separator}]*' for field in fields)
     return re.sub(pattern, lambda m: f"{m.group().split('=')[0]}={redaction}",
                   message)
-
-def get_db() -> connection.MySQLConnection:
-    """
-    Connect to the database using credentials from environment variables.
-
-    Returns:
-        mysql.connector.connection.MySQLConnection:
-            Database connection object.
-    """
-    username = os.getenv('PERSONAL_DATA_DB_USERNAME', 'root')
-    password = os.getenv('PERSONAL_DATA_DB_PASSWORD', '')
-    host = os.getenv('PERSONAL_DATA_DB_HOST', 'localhost')
-    db_name = os.getenv('PERSONAL_DATA_DB_NAME')
-
-    return mysql.connector.connect(
-        user=username,
-        password=password,
-        host=host,
-        database=db_name
-    )
 
 
 class RedactingFormatter(logging.Formatter):
@@ -108,8 +90,28 @@ def get_logger() -> logging.Logger:
     logger.propagate = False
 
     handler = logging.StreamHandler()
-    handler.setFormatter(RedactingFormatter(fields=PII_FIELDS))
+    handler.setFormatter(RedactingFormatter(fields=list(PII_FIELDS)))
 
     logger.addHandler(handler)
 
     return logger
+
+
+def get_db() -> connection.MySQLConnection:
+    """
+    Connect to the database using credentials from environment variables.
+
+    Returns:
+        mysql.connector.connection.MySQLConnection: Database connection object.
+    """
+    username = os.getenv('PERSONAL_DATA_DB_USERNAME', 'root')
+    password = os.getenv('PERSONAL_DATA_DB_PASSWORD', '')
+    host = os.getenv('PERSONAL_DATA_DB_HOST', 'localhost')
+    db_name = os.getenv('PERSONAL_DATA_DB_NAME')
+
+    return mysql.connector.connect(
+        user=username,
+        password=password,
+        host=host,
+        database=db_name
+    )

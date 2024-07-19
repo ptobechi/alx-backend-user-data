@@ -18,7 +18,8 @@ def filter_datum(fields: List[str],
         fields (List[str]): List of fields to obfuscate.
         redaction (str): String to replace the field values with.
         message (str): The log line to process.
-        separator (str): The character that separates the fields in the log line.
+        separator (str): The character that separates
+        the fields in the log line.
 
     Returns:
         str: The obfuscated log line.

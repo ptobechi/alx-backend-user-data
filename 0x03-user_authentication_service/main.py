@@ -18,6 +18,7 @@ def register_user(email: str, password: str) -> None:
     assert response.status_code == 200
     print(f"User {email} registered successfully.")
 
+
 def log_in_wrong_password(email: str,
                           password: str) -> None:
     """Password check user endpoint test"""
@@ -29,8 +30,9 @@ def log_in_wrong_password(email: str,
     }
     response = requests.post(url, data=data)
     assert response.status_code == 401
-    print(f"Attempted login with wrong password for 
+    print(f"Attempted login with wrong password for
           {email} returned 401 as expected.")
+
 
 def log_in(email: str, password: str) -> str:
     """Login user endpoint test"""
@@ -45,6 +47,7 @@ def log_in(email: str, password: str) -> str:
     print(f"Logged in successfully as {email}.")
     return response.cookies.get('session_id')
 
+
 def profile_unlogged() -> None:
     """logout user endpoint test"""
     url = f"{BASE_URL}/profile"
@@ -52,6 +55,7 @@ def profile_unlogged() -> None:
     assert response.status_code == 403
     print(f"Attempted to access profile unlogged,
           returned 403 as expected.")
+
 
 def profile_logged(session_id: str) -> None:
     """logged in user profile endpoint test"""
@@ -62,6 +66,7 @@ def profile_logged(session_id: str) -> None:
     print(f"Accessed profile successfully
           with session_id {session_id}.")
 
+
 def log_out(session_id: str) -> None:
     """logout user endpoint test"""
     url = f"{BASE_URL}/sessions"
@@ -70,6 +75,7 @@ def log_out(session_id: str) -> None:
     assert response.status_code == 200
     print(f"Logged out successfully with
           session_id {session_id}.")
+
 
 def reset_password_token(email: str) -> str:
     """generate reset password token endpoint test"""
@@ -81,6 +87,7 @@ def reset_password_token(email: str) -> str:
     print(f"Reset password token generated
           successfully for {email}: {reset_token}.")
     return reset_token
+
 
 def update_password(email: str, reset_token: str,
                     new_password: str) -> None:
@@ -95,10 +102,12 @@ def update_password(email: str, reset_token: str,
     assert response.status_code == 200
     print(f"Password updated successfully for {email}.")
 
+
 # Main script
 EMAIL = "guillaume@holberton.io"
 PASSWD = "b4l0u"
 NEW_PASSWD = "t4rt1fl3tt3"
+
 
 if __name__ == "__main__":
     register_user(EMAIL, PASSWD)

@@ -15,6 +15,7 @@ def home():
     """Returns a JSON response with a welcome message."""
     return jsonify({"message": "Bienvenue"})
 
+
 @app.route("/users", methods=["POST"])
 def register_user():
     """Registers a new user or returns an error if the user already exists."""

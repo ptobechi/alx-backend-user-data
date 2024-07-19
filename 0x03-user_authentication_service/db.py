@@ -67,24 +67,24 @@ class DB:
             raise InvalidRequestError(f"Unexpected error: {e}")
 
     def update_user(self, user_id: int, **kwargs) -> None:
-        """Update a user's attributes
+        """Update user attributes
 
         Args:
-            user_id (int):
-            The ID of the user to update.
+            user_id (int): The ID of the user to update.
             **kwargs:
-            Arbitrary keyword arguments to update the user's attributes.
+                Arbitrary keyword arguments to update the user's attributes.
 
         Returns:
             None
 
         Raises:
-            ValueError:
-                If an argument does not correspond to a user attribute.
+            ValueError: If an invalid attribute is passed.
+            NoResultFound: If the user with the given ID is not found.
         """
         user = self.find_user_by(id=user_id)
         for key, value in kwargs.items():
-            if not hasattr(user, key):
+            if hasattr(user, key):
+                setattr(user, key, value)
+            else:
                 raise ValueError(f"Invalid attribute: {key}")
-            setattr(user, key, value)
         self._session.commit()

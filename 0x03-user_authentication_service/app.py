@@ -1,7 +1,8 @@
 #!/usr/bin/env python3
 """Application routing module"""
-from flask import Flask, request, jsonify, abort
+from flask import Flask, request, jsonify, abort, redirect
 from auth import Auth
+
 
 app = Flask(__name__)
 AUTH = Auth()
@@ -57,7 +58,7 @@ def reset_password():
     email = request.form.get('email')
 
     try:
-        reset_token = auth.get_reset_password_token(email)
+        reset_token = AUTH.get_reset_password_token(email)
         return jsonify({"email": email, "reset_token": reset_token}), 200
     except ValueError:
         return "Email not registered", 403

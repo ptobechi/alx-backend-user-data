@@ -7,9 +7,11 @@ from auth import Auth
 app = Flask(__name__)
 AUTH = Auth()
 
+
 # POST /sessions route to handle login
 @app.route('/sessions', methods=['POST'])
 def login():
+    """Login Route"""
     if request.method == 'POST':
         email = request.form.get('email')
         password = request.form.get('password')
@@ -25,6 +27,7 @@ def login():
 # DELETE /sessions route to handle logout
 @app.route('/sessions', methods=['DELETE'])
 def logout():
+    """Logout Routes"""
     if request.method == 'DELETE':
         session_id = request.cookies.get('session_id')
         user = AUTH.get_user_from_session_id(session_id)
@@ -37,6 +40,7 @@ def logout():
 # GET /profile route to fetch user profile
 @app.route('/profile', methods=['GET'])
 def profile():
+    """Profile routes"""
     if request.method == 'GET':
         session_id = request.cookies.get('session_id')
         user = AUTH.get_user_from_session_id(session_id)
@@ -48,6 +52,7 @@ def profile():
 # GET / route to return a welcome message
 @app.route('/')
 def welcome():
+    """Welcome routes"""
     return jsonify({"message": "Bienvenue"})
 
 if __name__ == "__main__":
@@ -55,6 +60,7 @@ if __name__ == "__main__":
 
 @app.route('/reset_password', methods=['POST'])
 def reset_password():
+    """Reset Passwords"""
     email = request.form.get('email')
 
     try:
@@ -65,6 +71,7 @@ def reset_password():
     
 @app.route('/reset_password', methods=['PUT'])
 def update_password():
+    """Update Passwords"""
     try:
         email = request.form.get('email')
         reset_token = request.form.get('reset_token')

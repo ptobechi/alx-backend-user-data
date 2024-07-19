@@ -24,7 +24,7 @@ class Auth:
             return self._db.add_user(email, hashed_password)
 
     def _hash_password(self, password):
-        # Generate salt and hash the password
+        """Hash Password"""
         salt = bcrypt.gensalt()
         hashed_password = bcrypt.hashpw(password.encode('utf-8'), salt)
         return hashed_password
@@ -67,7 +67,7 @@ class Auth:
         return reset_token
     
     def update_password(self, reset_token, new_password):
-        # Find user by reset_token
+        """Update Pasword"""
         user = self._db.find_user_by(reset_token=reset_token)
         if not user:
             raise ValueError("Invalid reset token")
